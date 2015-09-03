@@ -1,3 +1,14 @@
+# mkbkindex, a lightweight and command-line based index generator
+# for professional use, especially optimized for Japanese book publishing
+#
+# Distributed by
+#   Document System Limitd (http://www.d-sys.co.jp)
+#   Atsushi Yokoyama, Firmlogics (http://flogics.com)
+#
+# Copyright (c) 2015, Document System Limited and Atsushi Yokoyama (Firmlogics)
+# All rights reserved.
+
+
 Please carefully read attached LICENSE prior to use this software.
 
 This software is currently tested on NetBSD and Mac OS X only.  It
