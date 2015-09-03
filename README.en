@@ -1,0 +1,27 @@
+Please carefully read attached LICENSE prior to use this software.
+
+This software is currently tested on NetBSD and Mac OS X only.  It
+should work on various operating systems, but some modification should
+be required.  The software looks depending on the following software
+behaviors.
+
+   - AWK
+   - sort
+
+In addition, this software depends on the following essential
+softwares.  Please install them at your end.  Especially, the project
+could not be achieved without KAKASI.
+
+   - Python (https://www.python.org)
+   - KAKASI (http://kakasi.namazu.org/index.html.en)
+   - roman.py (http://code.activestate.com/recipes/81611-roman-numerals/)
+
+Regarding roman.py, please refer ./libexec/README about its license.
+
+To install the software, please refer INSTALL.en.
+
+To use the software, please refer examples/input.txt.  We're afraid
+that comprehensive documentation is not ready yet.
+
+Atsushi Yokoyama, Firmlogics
+yokoyama@flogics.com

@@ -1,0 +1,53 @@
+# This is an example input file for mkbkindex.
+# These lines (with preceding '#') are treated as comments.
+
+# Following any lines must be encoded by Shift_JIS.
+# ファイル中の入力行はシフト JIS で符号化されている必要があります。
+# UTF-8 などの場合は、あらかじめシフト JIS に変換しておいてください。
+
+# We're afraid that the following explanation is written in Japanese
+# because this tool is optimized for Japanese book publishing.
+
+# フォーマット:
+# 
+# 索引語（半角スペースが入っても良い） 1つ以上のタブ（スペース不可） ノンブルの列（スペースが入ってはいけない）
+# 
+# か、
+# 
+# 幹索引語（半角スペースが入っても良い）[枝索引語] 1つ以上のタブ（スペース不可） ノンブルの列（スペースが入ってはいけない）
+# 
+# です。枝索引語中の ... は ～ に自動置換されます。
+# 
+# ・ 先頭が # で始まる行はコメントです。#@ は予約されているので
+#    使わないでください。
+# 
+# ・ 空行は、最終的には取り除かれます。
+#
+# GNU Emacs を使う場合、TAB キーに tab-to-tab-stop を割り当てておくと
+# 便利です。
+#
+# 例: M-x local-set-key TAB tab-to-tab-stop
+#
+# 
+# 以下はサンプル入力です。
+#
+
+プログラミング			65,x,iv
+3軸加速度センサー		81
+デバッグ			23,73
+入力				38
+operating system		ii,43
+デバッグ			iii
+データ[...入力]		46,77
+データ[...抽出]		56,83
+二分木				85,37
+データ[機械の出力する...]	96
+データ				66,28
+
+# 実行方法:
+#
+# mkbkindex input.txt
+#
+
+# 結果は、final.out として出力されます。すでに同名のファイルがある場合
+# には、上書きの前に確認を求められます。

@@ -1,0 +1,87 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# mkbkindex, a lightweight and command-line based index generator
+# for professional use, especially optimized for Japanese book publishing
+#
+# Distributed by
+#   Document System Limitd (http://www.d-sys.co.jp)
+#   Atsushi Yokoyama, Firmlogics (http://flogics.com)
+#
+# Copyright (c) 2015, Document System Limited and Atsushi Yokoyama (Firmlogics)
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of mkbkindex nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+DEBUG = False
+
+global last_trunk
+
+def proc_line(line):
+        global last_trunk
+        import re
+
+        if re.match(r'#', line):
+                print line
+                return
+                
+        if re.search(r'^[ \t]*$', line):
+                return
+
+	cols = line.split('\t')
+        if len(cols) < 2:
+                print "## ERROR", line
+                
+	elif len(cols) > 0 and len(cols[0]) > 0:
+		key = cols[0]
+                number = cols[len(cols) - 1]
+		key = key.replace("...", u"〜")
+		has_subkey = key.find('[')
+		if has_subkey >= 0:
+			trunk = key[0:has_subkey]
+			subkey = key[has_subkey + 1 : len(key) - 1]
+                        if last_trunk != trunk:
+                                print trunk
+                        print u"→" + subkey + "\t" + number
+		else:
+			trunk = key
+                        print trunk + "\t" + number
+                last_trunk = trunk
+	else:
+		print '## ERR'
+        
+def main():
+	import sys
+	import codecs
+
+	sys.stdin = codecs.getreader('shift_jis')(sys.stdin)
+	sys.stdout = codecs.getwriter('shift_jis')(sys.stdout)
+
+	for line in sys.stdin:
+		proc_line(line.strip())
+
+if __name__ == "__main__":
+	main()

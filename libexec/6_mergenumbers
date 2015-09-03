@@ -1,0 +1,173 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# mkbkindex, a lightweight and command-line based index generator
+# for professional use, especially optimized for Japanese book publishing
+#
+# Distributed by
+#   Document System Limitd (http://www.d-sys.co.jp)
+#   Atsushi Yokoyama, Firmlogics (http://flogics.com)
+#
+# Copyright (c) 2015, Document System Limited and Atsushi Yokoyama (Firmlogics)
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of mkbkindex nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+DEBUG = False
+
+ROMAN_OFFSET = 1000
+
+global last_key, last_number
+
+def to_normpage(p):
+        """
+        Change a page numgber string ('3', '123' or 'xxv', etc.) to
+        normalized page number.
+        """
+        import re, roman
+        
+        if re.match(r'[0-9]+', p):
+                return int(p)
+        if re.match(r'[ivxLc]+', p, flags=re.IGNORECASE):
+                return -ROMAN_OFFSET + roman.roman_to_int(
+                                p.encode('ascii', 'ignore'))
+	else:
+		raise ValueError('Illegal number')
+
+def page_to_str(p):
+        import roman
+        
+        if p < 0:
+                return roman.int_to_roman(p + ROMAN_OFFSET).lower()
+        else:
+                return str(p)
+                
+def sort_numbers(n):
+        import re
+
+        numbers_txt = n.split(',')
+        if DEBUG: print numbers_txt
+        numbers = []
+        for p in numbers_txt:
+                if re.search(r'^.+-.+$', p):
+                        p_range = re.split(r'-', p)
+                        numbers.extend(range(
+                                to_normpage(p_range[0]),
+                                to_normpage(p_range[1]) + 1))
+                else:
+                        numbers.append(to_normpage(p))
+                        
+        numbers = sorted(set(numbers))
+        if DEBUG: print numbers
+
+        s = ""
+        first_item = True
+        in_range = False
+        for p in numbers:
+                if first_item:
+                        last_page = p
+
+                if p == last_page + 1:
+                        in_range = True
+                else:
+                        if in_range:
+                                s += '-' + page_to_str(last_page)
+                        in_range = False
+
+                if not in_range:
+                        if first_item:
+                                s += page_to_str(p)
+                        else:
+                                s += ',' + page_to_str(p)
+                        
+                last_page = p
+                first_item = False
+
+        if in_range:
+                s += '-' + page_to_str(last_page)
+
+        return s
+        
+def put_line(key, numbers):
+	try:
+	        print key + "\t" + sort_numbers(numbers)
+	except ValueError:
+		import sys
+		sys.stderr.write('\nIndex ' + key + ' has an illegal number (' +
+			numbers + '), or number is missing.\n')
+		sys.exit(1)
+
+def proc_line(line):
+        global last_key, last_number
+        import re
+	import string
+
+        if re.match(r'#', line):
+                if last_number != '':
+                        put_line(last_key, last_number)
+                        last_key = ''
+                        last_number = ''
+                print line
+                return
+                
+	cols = re.split(r'\t+', line)
+	if (len(cols) > 0 and len(cols[0]) > 0):
+		key = cols[0]
+                key = key.replace(u"→", u"　")
+
+                if len(cols) > 1:
+                        number = cols[len(cols) - 1]
+			number = string.replace(number, ' ', '')
+                else:
+                        number = ''
+
+                if last_key == key:
+                        number = last_number + "," + number
+                elif last_number != '':
+                        put_line(last_key, last_number)
+                elif last_key:
+                        print last_key
+                        
+                last_key = key
+                last_number = number
+        
+def main():
+        global last_key, last_number
+	import sys
+	import codecs
+
+	sys.stdin = codecs.getreader('shift_jis')(sys.stdin)
+	sys.stdout = codecs.getwriter('shift_jis')(sys.stdout)
+
+        last_key = ''
+        last_number = ''
+        
+	for line in sys.stdin:
+		proc_line(line.strip())
+        put_line(last_key, last_number)
+
+if __name__ == "__main__":
+	main()

@@ -1,0 +1,207 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# mkbkindex, a lightweight and command-line based index generator
+# for professional use, especially optimized for Japanese book publishing
+#
+# Distributed by
+#   Document System Limitd (http://www.d-sys.co.jp)
+#   Atsushi Yokoyama, Firmlogics (http://flogics.com)
+#
+# Copyright (c) 2015, Document System Limited and Atsushi Yokoyama (Firmlogics)
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of mkbkindex nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+DEBUG = False
+
+katakana_list	      = u'アイウエオカキクケコガギグゲゴサシスセソザジズゼゾ' +\
+			u'タチツテトダヂヅデドナニヌネノハヒフヘホバビブベボ' +\
+			u'パピプペポマミムメモヤユヨラリルレロワヲン' + \
+			u'ッァィゥェォャュョ'
+hiragana_list	      = u'あいうえおかきくけこがぎぐげごさしすせそざじずぜぞ' +\
+			u'たちつてとだぢづでどなにぬねのはひふへほばびぶべぼ' +\
+			u'ぱぴぷぺぽまみむめもやゆよらりるれろわおん' + \
+			u'っぁぃぅぇぉゃゅょ'
+
+choon_a_list	      = u'あかさたなはまやらわ' + \
+			u'がざだばぱ'
+choon_i_list	      = u'いきしちにひみり' + \
+			u'ぎじぢびぴ'
+choon_u_list	      = u'うくすつぬふむゆる' + \
+			u'ぐずづぶぷ'
+choon_e_list	      = u'えけせてねへめれ' + \
+			u'げぜでべぺ'
+choon_o_list	      = u'おこそとのほもよろを' + \
+			u'ごぞどぼぽ'
+
+dakuon_list	      = u'がぎぐげござじずぜぞだぢづでどばびぶべぼ'
+dakuon_conv_list      = u'かきくけこさしすせそたちつてとはひふへほ'
+handakuon_list	      = u'ぱぴぷぺぽ'
+handakuon_conv_list   = u'はひふへほ'
+small_list	      = u'ぁぃぅぇぉっゃゅょ'
+small_conv_list	      = u'あいうえおつやゆよ'
+
+small_alph_list	      = 'abcdefghijklmnopqrstuvwxyz'
+cap_alph_list	      = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+ignore_char_list      = u'[].『』「」・'
+
+def seion(s_in):
+	"""
+	Return a pair of converted seion and 2nd key
+	"""
+	if DEBUG: print '#', len(s_in), s_in
+	s_out = ''
+	key2 = ''
+	weight_val = {}
+	weight_pos = 0
+	if katakana_list.find(s_in[0]) >= 0:
+		katakana_word = True
+	else:
+		katakana_word = False
+
+	for i in range(len(s_in)):
+		c = s_in[i]
+
+		if ignore_char_list.find(c) >= 0:
+			continue
+
+		weight_val[weight_pos] = 0
+
+                if c == ' ':
+                        c = '-'
+
+                pos_a = small_alph_list.find(c)
+                if pos_a >= 0:
+                        c = cap_alph_list[pos_a]
+
+		# Katakana conversion
+		pos_k = katakana_list.find(c)
+		if pos_k >= 0:
+			c = hiragana_list[pos_k]
+
+		# Cho-on conversion
+		if c == u'ー':
+			if choon_a_list.find(c_prev) >= 0:
+				c = u'あ'
+			elif choon_i_list.find(c_prev) >= 0:
+				c = u'い'
+			elif choon_u_list.find(c_prev) >= 0:
+				c = u'う'
+			elif choon_e_list.find(c_prev) >= 0:
+				c = u'え'
+			elif choon_o_list.find(c_prev) >= 0:
+				c = u'お'
+			else:
+				print "#### ERROR", s_in[i - 1]
+
+		pos_d = dakuon_list.find(c)
+		pos_h = handakuon_list.find(c)
+		pos_s = small_list.find(c)
+		if DEBUG: print '%', c, i, weight_pos
+		if pos_d >= 0:
+			c = dakuon_conv_list[pos_d]
+			weight_val[weight_pos] += 8
+			if DEBUG: print '+', 8
+		elif pos_h >= 0:
+			c = handakuon_conv_list[pos_h]
+			weight_val[weight_pos] += 16
+			if DEBUG: print '+', 16
+		elif pos_s >= 0:
+			c = small_conv_list[pos_s]
+			weight_val[weight_pos] += 4
+			if DEBUG: print '+', 4
+		elif c == u'ー':
+			c = 'ERROR'
+
+		s_out += c
+		c_prev = c
+		weight_pos += 1
+
+	if DEBUG: print weight_val
+	for i in range(weight_pos):
+		if weight_val[i] < 10:
+			key2 += str(weight_val[i])
+		else:
+			key2 += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[weight_val[i]-10]
+	if katakana_word:
+		key2 += 'K'
+	else:
+		key2 += 'H'
+	if DEBUG: print key2
+	return s_out, key2
+
+def proc_line(line, linenum):
+	import re
+	import sys
+
+	cols = line.split('\t')
+
+	if re.match('^#', line):
+		print line
+	elif len(cols) > 2 and len(cols[1]) > 0:
+		key = cols[0]
+		key = key.replace("...", u"Ω")
+		has_subkey = key.find('[')
+		if has_subkey >= 0:
+			trunk = key[0:has_subkey]
+			subkey = key[has_subkey + 1 : len(key) - 1]
+		else:
+			trunk = key
+			subkey = '-'
+		trunk_out = seion(trunk)
+		subkey_out = seion(subkey)
+		print trunk_out[0] + "\t" + trunk_out[1] + "\t" + \
+			subkey_out[0] + "\t" + subkey_out[1] + "\t" + line
+	elif len(cols) == 1 and len(cols[0]) == 0:
+		print ''
+	else:
+		if len(cols) == 1:
+			err_index = cols[0]
+		else:
+			err_index = cols[1]
+
+		sys.stderr.write('\nERROR: No number specified for index "' +
+			err_index + '", at line ' + str(linenum) + '\n')
+		sys.stderr.write('A tab may be missing in the line.\n')
+		sys.exit(1)
+
+def main():
+	import sys
+	import codecs
+
+	linenum = 1
+
+	sys.stdin = codecs.getreader('shift_jis')(sys.stdin)
+	sys.stdout = codecs.getwriter('shift_jis')(sys.stdout)
+
+	for line in sys.stdin:
+		proc_line(line.strip(), linenum)
+		linenum += 1
+
+if __name__ == "__main__":
+	main()

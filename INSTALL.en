@@ -1,0 +1,41 @@
+This document is still under writing.  At the moment, I will describe
+minimum information below to use the code on NetBSD or Mac OS X.
+
+1. Prior using the software, please install the followings.
+
+   - Python 2.7 or later (https://www.python.org)
+   - KAKASI 2.3.6 or later  (http://kakasi.namazu.org/index.html.en)
+
+   Please also set environment variable PATH to point the directories
+   where the above softwares are installed.
+
+2. Copy the following files into an appropriate directory.
+   /usr/local/libexec or similar is recommended.  Installing in
+   /usr/local/bin with the following mkbkindex is also acceptable and
+   also practical.
+
+   ./libexec/[1-7]_*
+   ./libexec/roman.py
+
+3. Copy the following file into an appropriate directory.
+   /usr/local/bin or similar is recommended.
+
+   ./bin/mkbkindex
+
+4. Check and modify the above libexec/1_add_yomigana regarding the
+   following line.
+
+   myawk=awk
+
+   This should point an AWK interpreter.  NetBSD awk and Mac OS X
+   standard awk are tested.  GNU awk (GAWK) is not tested at the
+   moment.
+
+5. Check and modify the above bin/mkbkindex regarding the following
+   lines.  (The first line below is commented out and an example.)
+
+   # libexecdir=/usr/local/mkbkindex/libexec
+   libexecdir=./libexec
+
+   If you installed the ./libexec/[1-7]_* in /usr/local/libexec, the
+   above libexecdir must point there.

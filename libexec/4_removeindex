@@ -1,0 +1,151 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# mkbkindex, a lightweight and command-line based index generator
+# for professional use, especially optimized for Japanese book publishing
+#
+# Distributed by
+#   Document System Limitd (http://www.d-sys.co.jp)
+#   Atsushi Yokoyama, Firmlogics (http://flogics.com)
+#
+# Copyright (c) 2015, Document System Limited and Atsushi Yokoyama (Firmlogics)
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of mkbkindex nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+DEBUG = False
+
+global last_index
+
+def proc_index_head(c):
+        global last_index
+
+        if "ABC".find(c) >= 0:
+                c = "abc"
+        elif "DEF".find(c) >= 0:
+                c = "def"
+        elif "GHI".find(c) >= 0:
+                c = "ghi"
+        elif "JKL".find(c) >= 0:
+                c = "jkl"
+        elif "MNO".find(c) >= 0:
+                c = "mno"
+        elif "PQR".find(c) >= 0:
+                c = "pqr"
+        elif "STU".find(c) >= 0:
+                c = "stu"
+        elif "VWXYZ".find(c) >= 0:
+                c = "vwxyz"
+        elif u"あいうえおアイウエオ".find(c) >= 0:
+                c = u"あ"
+        elif u"かきくけこカキクケコ".find(c) >= 0:
+                c = u"か"
+        elif u"さしすせそサシセソ".find(c) >= 0:
+                c = u"さ"
+        elif u"たちつてとタチツテト".find(c) >= 0:
+                c = u"た"
+        elif u"なにぬねのナニヌネノ".find(c) >= 0:
+                c = u"な"
+        elif u"はひふへのハヒフヘホ".find(c) >= 0:
+                c = u"は"
+        elif u"まみむめもマミムメモ".find(c) >= 0:
+                c = u"ま"
+        elif u"やゆよヤユヨ".find(c) >= 0:
+                c = u"や"
+        elif u"らりるれろラリルレロ".find(c) >= 0:
+                c = u"ら"
+        elif u"わをんワヲン".find(c) >= 0:
+                c = u"わ"
+
+        if c == last_index:
+                return
+        
+        if not last_index:
+                print u"#@ 記号・数字\n#@"
+        if c == 'abc':
+                print u"#@\n#@ A・B・C\n#@"
+        if c == 'def':
+                print u"#@\n#@ D・E・F\n#@"
+        if c == 'ghi':
+                print u"#@\n#@ G・H・I\n#@"
+        if c == 'jkl':
+                print u"#@\n#@ J・K・L\n#@"
+        if c == 'mno':
+                print u"#@\n#@ M・N・O\n#@"
+        if c == 'pqr':
+                print u"#@\n#@ P・Q・R\n#@"
+        if c == 'stu':
+                print u"#@\n#@ S・T・U\n#@"
+        if c == 'vwxyz':
+                print u"#@\n#@ V・W・X・Y・Z\n#@"
+        if c == u'あ':
+                print u"#@\n#@ あ行\n#@"
+        if c == u'か':
+                print u"#@\n#@ か行\n#@"
+        if c == u'さ':
+                print u"#@\n#@ さ行\n#@"
+        if c == u'た':
+                print u"#@\n#@ た行\n#@"
+        if c == u'な':
+                print u"#@\n#@ な行\n#@"
+        if c == u'は':
+                print u"#@\n#@ は行\n#@"
+        if c == u'ま':
+                print u"#@\n#@ ま行\n#@"
+        if c == u'や':
+                print u"#@\n#@ や行\n#@"
+        if c == u'ら':
+                print u"#@\n#@ ら行\n#@"
+        if c == u'わ':
+                print u"#@\n#@ わ行\n#@"
+
+        last_index = c
+
+def proc_line(line):
+        import re
+
+        if re.match(r'#', line) or len(line) == 0:
+                print line
+        else:
+                proc_index_head(line[0])
+                print re.sub(r'^([^\t]*\t){5}', '', line)
+
+def main():
+        global last_index
+        
+	import sys
+	import codecs
+
+        last_index = None
+
+	sys.stdin = codecs.getreader('shift_jis')(sys.stdin)
+	sys.stdout = codecs.getwriter('shift_jis')(sys.stdout)
+
+	for line in sys.stdin:
+		proc_line(line.strip())
+
+if __name__ == "__main__":
+	main()
