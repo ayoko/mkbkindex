@@ -12,7 +12,7 @@ minimum information below to use the code on NetBSD or Mac OS X.
 2. Copy the following files into an appropriate directory.
    /usr/local/libexec or similar is recommended.  Installing in
    /usr/local/bin with the following mkbkindex is also acceptable and
-   also practical.
+   practical.
 
    ./libexec/[1-7]_*
    ./libexec/roman.py
