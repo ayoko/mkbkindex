@@ -16,7 +16,8 @@ could not be achieved without KAKASI.
    - KAKASI (http://kakasi.namazu.org/index.html.en)
    - roman.py (http://code.activestate.com/recipes/81611-roman-numerals/)
 
-Regarding roman.py, please refer ./libexec/README about its license.
+Regarding roman.py, please refer ./libexec/README.roman_py about its
+licensing.
 
 To install the software, please refer INSTALL.en.
 
