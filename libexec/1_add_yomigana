@@ -48,7 +48,7 @@ rm -f $furigana_file $org_file
 cat $* > $org_file
 
 # Removing the last column (should be a page number)
-$myawk '{$NF = ""; NF --; print $0}' $org_file |
+$myawk 'NF == 0 {print} NF > 0 {$NF = ""; NF --; print $0}' $org_file |
 	kakasi -isjis -osjis -JH > $furigana_file
 
 # Merge (or put) the furigana file into the original file
