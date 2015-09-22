@@ -43,7 +43,7 @@ tmpdir=/tmp
 debug=0
 tmpfile_trunk=$tmpdir/mkbkindex_$$_
 
-function cleanup()
+cleanup ()
 {
 	rm -f $tmpfile_trunk.[1234567]
 }
