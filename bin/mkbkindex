@@ -38,46 +38,80 @@
 # libexecdir=/usr/local/mkbkindex/libexec
 libexecdir=./libexec
 
+tmpdir=/tmp
+
+debug=0
+tmpfile_trunk=$tmpdir/mkbkindex_$$_
+
+function cleanup()
+{
+	rm -f $tmpfile_trunk.[1234567]
+}
+
+args=`getopt d $*`
+
 if [ "$1" = "" ]
 then
-	echo usage: mkbkindex input
-	exit 1
+	echo usage: mkbkindex [-d] input
+	echo '-d: enable debug (leave intermediate files)'
+	exit 2
 fi
 
-if [ -r "final.out" ]
-then
-	cp -p final.out final.bak
-fi
+set -- $args
 
-/bin/echo -n 1_add_yomigana...
-$libexecdir/1_add_yomigana $1 > 1.out
-/bin/echo -n 2_make2ndindex...
-$libexecdir/2_make2ndindex < 1.out > 2.out
+for i
+do
+	case "$i"
+	in
+		-d)
+			debug=1
+			/bin/echo 'Debug mode' 1>&2
+			shift;;
+		--)
+			shift; break;;
+	esac
+done
+
+/bin/echo -n 1_add_yomigana... 1>&2
+$libexecdir/1_add_yomigana $1 > $tmpfile_trunk.1
+/bin/echo -n 2_make2ndindex... 1>&2
+$libexecdir/2_make2ndindex < $tmpfile_trunk.1 > $tmpfile_trunk.2
 if [ $? -ne 0 ]
 then
 	/bin/echo 'Aborted.'
+	cleanup
 	exit 1
 fi
 
-/bin/echo -n 3_sort...
-LANG=C /usr/bin/sort 2.out > 3.out
-/bin/echo -n 4_removeindex...
-$libexecdir/4_removeindex < 3.out > 4.out
-/bin/echo -n 5_extractlayer...
-$libexecdir/5_extractlayer < 4.out > 5.out
-/bin/echo -n 6_mergenumbers...
-$libexecdir/6_mergenumbers < 5.out > 6.out
+/bin/echo -n 3_sort... 1>&2
+LANG=C /usr/bin/sort $tmpfile_trunk.2 > $tmpfile_trunk.3
+/bin/echo -n 4_removeindex... 1>&2
+$libexecdir/4_removeindex < $tmpfile_trunk.3 > $tmpfile_trunk.4
+/bin/echo -n 5_extractlayer... 1>&2
+$libexecdir/5_extractlayer < $tmpfile_trunk.4 > $tmpfile_trunk.5
+/bin/echo -n 6_mergenumbers... 1>&2
+$libexecdir/6_mergenumbers < $tmpfile_trunk.5 > $tmpfile_trunk.6
 if [ $? -ne 0 ]
 then
 	/bin/echo 'Format error detected.  Aborted.'
+	cleanup
 	exit 1
 fi
 
-/bin/echo -n 7_format...
-$libexecdir/7_format < 6.out > 7.out
+/bin/echo -n 7_format... 1>&2
+$libexecdir/7_format < $tmpfile_trunk.6 > $tmpfile_trunk.7
 
-echo
+/bin/echo 1>&2
 
-cp -ip 7.out final.out
+cat $tmpfile_trunk.7
 
-echo done
+if [ $debug -gt 0 ]
+then
+	for i in 1 2 3 4 5 6 7
+	do
+		cp -p $tmpfile_trunk.$i $i.out
+	done
+fi
+
+cleanup
+/bin/echo done 1>&2
