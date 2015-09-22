@@ -15,6 +15,10 @@ ul {
 	line-height:110%;
 	margin-right:100px;
 }
+ul.nobullets {
+	list-style-type: none;
+	padding-left: 20px;
+}
 ol {
 	font-size:14px;
 	line-height:110%;
@@ -41,18 +45,22 @@ span.cmd {
 
 <p class="title1">索引の作り方</p>
 
-<ul>
+<ul class="nobullets">
 <li><a href="#sec1">1. 編集はいかにして索引を作るか？</a></li>
-<li><a href="#sec1-1">1.1 「おかしな国のアリス」再校出し</a></li>
-<li><a href="#sec1-2">1.2 索引語の拾い出し</a></li>
-<li><a href="#sec1-3">1.3 索引語の入力</a></li>
-<li><a href="#sec1-4">1.4 mkbkindexコマンドで処理</a></li>
-<li><a href="#sec1-5">1.5 索引原稿の最適化</a></li>
+  <li><ul class="nobullets">
+  <li><a href="#sec1-1">1.1 「おかしな国のアリス」再校出し</a></li>
+  <li><a href="#sec1-2">1.2 索引語の拾い出し</a></li>
+  <li><a href="#sec1-3">1.3 索引語の入力</a></li>
+  <li><a href="#sec1-4">1.4 mkbkindexコマンドで処理</a></li>
+  <li><a href="#sec1-5">1.5 索引原稿の最適化</a></li>
+  </ul></li>
 <li><a href="#sec2">2. mkbkindexのインストール準備</a></li>
 <li><a href="#sec3">3. mkbkindex本体のインストール</a></li>
-<li><a href="#sec3-1">3.1 Linux (Debian) へのインストール</a></li>
-<li><a href="#sec3-2">3.2 Raspberry Piへのインストール</a></li>
-<li><a href="#sec3-3">3.3 Mac OS X (10.10.5) へのインストール</a></li>
+  <li><ul class="nobullets">
+  <li><a href="#sec3-1">3.1 Linux (Debian) へのインストール</a></li>
+  <li><a href="#sec3-2">3.2 Raspberry Piへのインストール</a></li>
+  <li><a href="#sec3-3">3.3 Mac OS X (10.10.5) へのインストール</a></li>
+  </ul></li>
 </ul>
 
 <p class="title2" id="sec1">1. 編集はいかにして索引を作るか？</p>
