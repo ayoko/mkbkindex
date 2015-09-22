@@ -1,0 +1,39 @@
+#「おかしな国のアリス」索引元原稿
+お菓子		1
+おかしな	1
+Alice		1
+Sweets		1
+Sweets[Sweetsland]	1
+アリス		3
+アリス		1-3
+パイ		3
+A		3
+I		3
+Alice		3
+Alice		1-3
+apple pie	3
+Apple 		3
+Apple[ANNApple]		3
+ブルーノ		5
+B			5
+Bruno			5
+I			5
+Biolence		5
+Violence		5
+チェシェ猫		7
+レモン			7
+Citron			7
+C			7
+Cheshire Cat		7
+I	 		7
+chunk		7
+blew		7
+ヤマネ		9
+ドーナツ	9
+ちっ息		9
+D		9
+Doumouse	9
+He		9
+choke		9
+Doughnut	9
+Donuts		9
