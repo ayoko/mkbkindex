@@ -1,0 +1,427 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<script language="JavaScript" src="http://www.d-sys.co.jp/js/email.js"></script>
+<head>
+<title>ドキュメントシステム ： 索引の作り方</title>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<link rel="stylesheet" type="text/css" href="http://www.d-sys.co.jp/style.css">
+</head>
+<body>
+<table width="600" cellspacing="0" cellpadding="0" border="0"><tr><td>
+<p class="small">株式会社ドキュメントシステム</p>
+<p class="small"><a href="./">トップページ</a> &gt; 索引の作り方</font></p>
+
+<br>
+
+<p class="title1">索引の作り方</p>
+
+<h4>1. 編集はいかにして索引を作るか？</h4>
+
+<p>
+mkbkindexコマンドによる索引の作り方を紹介します。四の五の言わずにやってみましょう。インストール方法などはあとで説明します。
+</p>
+
+<h5>1.1 「おかしな国のアリス」再校出し</h5>
+
+<p>
+いまあなたは、次のような全10ページの小冊子を編集しているとします。説明のため、ダサくても通しノンブルを振っておきます。
+</p>
+<br/>
+
+<p>
+<img src="alice_v2_tobira.png" width="600">
+</p>
+<br/>
+<p>
+<img src="alice_v2_p2-3.png" width="600">
+</p>
+<br/>
+<p>
+<img src="alice_v2_p4-5.png" width="600">
+</p>
+<br/>
+<p>
+<img src="alice_v2_p6-7.png" width="600">
+</p>
+<br/>
+<p>
+<img src="alice_v2_p8-9.png" width="600">
+</p>
+<br/>
+
+<p>
+現在、再校段階にあり、ページ切りが確定しています。この状態から索引原稿を作成し、p.10として索引を組んでから、三校･念校をとったら、印刷所に入稿です。
+</p>
+
+<h5>1.2 索引語の拾い出し</h5>
+
+<p>
+では、索引語を拾っていきましょう。ラインマーカーや目立つペンを使って、再校校正紙の上に手で書き込みます。こんな感じです。
+</p>
+<br/>
+
+<p>
+<img src="alice_v2_p2-3mark.png" width="600">
+</p>
+<br/>
+
+<h5>1.3 索引語の入力</h5>
+
+<p>
+拾った索引語を、ノンブルと一緒にテキストで入力します。<br/>
+この小冊子では、全頁分でこんな感じになります。
+</p>
+<br/>
+
+<pre>
+#「おかしな国のアリス」索引元原稿
+お菓子          1
+おかしな     1
+Alice          1
+Sweets          1
+Sweets[Sweetsland]     1
+アリス          3
+アリス          1-3
+パイ          3
+A          3
+I          3
+Alice          3
+Alice          1-3
+apple pie     3
+Apple           3
+Apple[ANNApple]          3
+ブルーノ          5
+B               5
+Bruno               5
+I               5
+Biolence          5
+Violence          5
+チェシェ猫          7
+レモン               7
+Citron               7
+C               7
+Cheshire Cat          7
+I               7
+chunk          7
+blew          7
+ヤマネ          9
+ドーナツ     9
+ちっ息          9
+D          9
+Doumouse     9
+He          9
+choke          9
+Doughnut     9
+Donuts          9
+</pre>
+
+<p>
+入力の仕様は次のとおりです。
+<ul>
+<li>漢字の"読み"は自動で推測するので入れなくてOK（KAKASIの解析能力に依存→よって間違う可能性あり）</li>
+<li>索引語とノンブルはタブで区切る。複数でもOK。</li>
+<li>空白（スペース文字）は語の一部として扱うので、拾った語のあとに入れるとエラーになる。つまり、索引語とノンブルの間は、タブ文字しか入力が許されない。</li>
+<li>英数文字は半角、日本語はSJIS全角、半角カナ使用不可</li>
+<li>"大きな話[小さな話]"のように、[ ] で括ると、[ ]内を上位の語に付属する子の語としてインデントして整形します。</li>
+<li>ノンブルを"1-3"とすると、p.1-p.3までの範囲を指定した索引原稿を作成できます。</li>
+<li>行頭#、空行は無視します。</li>
+<li>エラー処理は雑です。うまく通らなかったら、自力で文字コードなど確認が必要。</li>
+<li>1.out～7.outのような中間ファイルを作ります。処理が済めば不要です。</li>
+</ul>
+
+<h5>1.4 mkbkindexコマンドで処理</h5>
+
+<p>
+作成したテキストファイルが、alice_index.txtとしたら、次のようにコマンドを実行します。
+</p>
+
+<pre>
+$ mkbkindex alice_index.txt
+</pre>
+
+<p>
+すると、次のようなファイルが作成されます。
+</p>
+
+<pre>
+$ ls final.out
+</pre>
+
+<p>
+このファイルが索引原稿です。<br/>
+さっそく見てみましょう。
+</p>
+
+<pre>
+#「おかしな国のアリス」索引元原稿
+記号・数字
+
+
+A・B・C
+
+A                               3
+Alice                           1-3
+Apple                           3
+　ANNApple                      3
+apple pie                       3
+B                               5
+Biolence                        5
+blew                            7
+Bruno                           5
+C                               7
+Cheshire Cat                    7
+choke                           9
+chunk                           7
+Citron                          7
+
+D・E・F
+
+D                               9
+Donuts                          9
+Doughnut                        9
+Doumouse                        9
+
+G・H・I
+
+He                              9
+I                               3, 5, 7
+
+S・T・U
+
+Sweets                          1
+　Sweetsland                    1
+
+V・W・X・Y・Z
+
+Violence                        5
+
+あ行
+
+アリス                          1-3
+お菓子                          1
+おかしな                        1
+
+た行
+
+チェシェ猫                      7
+ちっ息                          9
+ドーナツ                        9
+
+は行
+
+パイ                            3
+ブルーノ                        5
+
+や行
+
+ヤマネ                          9
+
+ら行
+
+レモン                          7
+</pre>
+
+<p>
+きれいにソートされた、索引らしい原稿が得られました。<br/>
+これを組版の方に渡せば、索引頁の出来上がりです。
+</p>
+
+<h5>1.5 索引原稿の最適化</h5>
+
+<p>
+といっても、最初に作成された索引原稿は、おおむね次のような欠点が含まれているものです。
+</p>
+
+<ol>
+<li>漢字の読みが間違っている。</li>
+<li>その結果、ソート語順がズレてしまう。</li>
+<li>入力ミスや、元来の校正漏れによって、意図しない索引語、語順が出来てしまう。</li>
+<li>遡って、本文のミスに気づく→校正紙に反映させましょう。</li>
+<li>ネスト（上位の語にインデントされた下位の語がつくこと）が不自然。統一感がない。</li>
+<li>語順でソートした結果なのに、同じノンブルが続いてしまって、なんかカッコ悪い。</li>
+<li>語順が気に入らない。JIS規定の語順に従いたい。<br/>
+<pre>
+ex. あえてこうしたい場合など。
+　第01章
+　第10章
+　第2章
+</pre></li>
+</ol>
+
+<p>
+これらは、生成されたfinal.outを、手作業で編集して、整えてから入稿原稿としてください。
+</p>
+<br/>
+
+<p>
+1.～4.は、KAKASIの仕様だったり、校正上の問題です。索引頁が組版されたら、きちんと校正をかけましょう。
+</p>
+<br/>
+
+<p>
+5.～7.は、美意識の問題なので、final.outを好みの索引になるよう、エディタ等で最適化していってください。
+</p>
+<br/>
+
+<p>
+なお、語順の参照として、mkbkindexでは、<a href="https://github.com/ayoko/mkbkindex/blob/master/doc/indexing_order.ja">このような語順の規則</a>に従っています。
+</p>
+<br/>
+
+<p>
+フィードバックを歓迎します。（<a href="https://github.com/ayoko/mkbkindex/blob/master/doc/TODO.ja">TODOリスト</a>）
+</p>
+
+<h4>2. mkbkindexのインストール準備</h4>
+
+<ul>
+<li>mkbkindexでは、unix系のCUI環境（LinuxとかBSDとか....）を自力運用していないと、きびしめです。まずは、システム管理者にこのサイトを見せて、相談してみましょう。</li>
+<li>MacOSは、実際には裏側でBSD Unixが動いているので問題なく動作します。後ほどインストール方法を記述します。</li>
+<li>mkbkindexはPythonとKAKASIを利用します。mkbkindexを利用する前にインストールしておきましょう。</li>
+</ul>
+
+<h4>3. mkbkindex本体のインストール</h4>
+
+<p>
+mkbkindexは、<a href="https://github.com/ayoko/mkbkindex">GitHubで配布（BSDライセンス）</a>していますが、以下に各OS毎のインストール方法をまとめておきます。
+</p>
+
+<h5>3.1 Linux (Debian) へのインストール</h5>
+
+<p>
+ここでは、Debian 8.2.0 (amd64) へのインストール方法を示します。あらかじめ、Debianをインストールしておきます。インストール言語はJapanese（日本語）とします。
+</p>
+<br/>
+
+<p>
+1. 「端末」を開くか、あるいは他のPCからSSHなどでログインします。
+</p>
+<br/>
+
+<p>
+2. テンポラリのディレクトリを作成し、そこにmkbkindexをダウンロードします。
+</p>
+
+<pre>
+$ mkdir -p ~/tmp/mkbkindex
+$ cd ~/tmp/mkbkindex
+$ wget https://github.com/ayoko/mkbkindex/archive/master.zip
+</pre>
+
+<p>
+3. ZIPファイルを展開し、展開先のディレクトリに移動します。
+</p>
+
+<pre>
+$ unzip master.zip
+$ cd mkbkindex-master
+</pre>
+
+<p>
+4. ライセンスを一読し、docディレクトリにドキュメントがあることを確認します。
+</p>
+
+<pre>
+$ more LICENSE
+$ ls doc
+</pre>
+
+<p>
+5. sudoとKAKASIをインストールします。パスワードを聞かれたら自分のパスワードを入力します。
+（sudoはmkbkindexに直接関係ありませんが、後々の作業が楽になります。）
+</p>
+
+<pre>
+$ su
+（rootのパスワードおよび改行を入力します）
+# apt-get install sudo kakasi
+（続行するかと聞かれたらYおよび改行を入力します）
+# adduser 自分のユーザー名 sudo
+# exit
+$ （再度）exit
+（sudoが有効になるように、ここで一度ログアウトしてログインし直します。
+以下のコマンドがエラーなく実行できれば、sudoが正しく設定できています。
+うまくいかない場合は、Debianを再起動してみましょう）
+$ sudo ls
+（自分のパスワードおよび改行を入力）
+</pre>
+
+<p>
+6. ファイル群をインストールします。以下、sudoコマンドでパスワードを聞かれたら、
+自分のパスワードと改行を入力します。
+</p>
+
+<pre>
+$ sudo mkdir -p /usr/local/bin /usr/local/libexec
+$ sudo cp libexec/{[1-7]*,roman.py} /usr/local/libexec
+$ sudo chmod +x /usr/local/libexec/{[1-7]*,roman.py}
+</pre>
+
+<p>
+7. bin/mkbkindexを編集（カスタマイズ）します。
+任意のテキストエディタでbin/mkbkindexを開き、libexecdirというキーワードが含まれる2行を以下のように修正します。（一つ目の行先頭の#と/mkbkindexを取り除き、その次の行の先頭に#を追加します。）
+</p>
+<br/>
+<p>
+修正後:
+</p>
+<pre>
+libexecdir=/usr/local/libexec
+# libexecdir=./libexec
+</pre>
+
+<p>
+8. bin/mkbkindexをインストールします。
+</p>
+
+<pre>
+$ sudo cp bin/mkbkindex /usr/local/bin
+$ sudo chmod +x /usr/local/bin/mkbkindex
+</pre>
+
+<p>
+9. テストとして、サンプルファイルを処理してみます。
+</p>
+
+<pre>
+$ mkbkindex examples/input.txt
+</pre>
+
+<p>
+次のようなメッセージが出るはずです。もし既にfinal.outというファイルがある場合は、上書きするかどうかを聞かれます。
+</p>
+
+<pre>
+1_add_yomigana...2_make2ndindex...3_sort...4_removeindex...5_extractlayer...
+6_mergenumbers...7_format...
+done
+</pre>
+
+<p>
+final.outはSJISファイルなので、次のように閲覧します。
+</p>
+
+<pre>
+$ nkf -w final.out | less
+</pre>
+
+<h5>3.2 Raspberry Piへのインストール</h5>
+
+<p>
+TBD
+</p>
+
+<h5>3.3 Mac OS X (10.10.5) へのインストール</h5>
+
+<p>
+TBD
+</p>
+<br/>
+
+<p>
+[このWebページはここで終わりです]
+</p>
+
+</td></tr></table>
+</body>
+</html>
