@@ -428,11 +428,11 @@ $ sudo chmod +x /usr/local/bin/mkbkindex
 </p>
 
 <pre class="border">
-$ mkbkindex examples/input.txt
+$ mkbkindex examples/input.txt > output.txt
 </pre>
 
 <p>
-次のようなメッセージが出るはずです。もし既にfinal.outというファイルがある場合は、上書きするかどうかを聞かれます。
+次のようなメッセージが出て、output.txtが生成されます。
 </p>
 
 <pre  class="border">
@@ -442,11 +442,12 @@ done
 </pre>
 
 <p>
-final.outはSJISファイルなので、次のように閲覧します。
+output.txtはSJISファイルなので、次のように閲覧します。
 </p>
 
 <pre class="border">
-$ nkf -w final.out | less
+$ nkf -w output.txt | less
+（あるいはjless output.txtなど）
 </pre>
 
 <p class="title2" id="sec3-2">3.2 Raspberry Piへのインストール</p>
