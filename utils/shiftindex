@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+
+# shiftindex
+#
+# usage: shiftindex page-range page-offset input-file"
+#
+# example:
+#   shiftindex 235-240 -2 input.txt
+#   shiftindex 300-9999 -4 input.txt
+#
+# Distributed by
+#   Document System Limitd (http://www.d-sys.co.jp)
+#   Atsushi Yokoyama, Firmlogics (http://flogics.com)
+#
+# Copyright (c) 2018, Document System Limited and Atsushi Yokoyama (Firmlogics)
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name of mkbkindex nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+def shiftindex(f, prange, offset):
+    import re
+    import sys
+
+    for line in f:
+        line = line.rstrip()
+
+        m = re.search(r'[\d, -]+ *$', line)
+        if not m:
+            # does not contain page numbers
+            print line
+            continue
+
+        sys.stdout.write(line[0:m.start()])
+        line = line[m.start():]
+
+        while True:
+            m = re.search(r'\d+', line)
+            if m:
+                num = int(m.group(0))
+                if num >= prange[0] and num <= prange[1]:
+                    num += offset
+                sys.stdout.write(line[0:m.start()])
+                sys.stdout.write(str(num))
+                line = line[m.end():]
+            else:
+                print line
+                break
+
+def usage():
+    print "usage: shiftindex page-range page-offset input-file"
+    print ""
+    print "example:"
+    print "  shiftindex 235-240 -2 input.txt"
+
+def main():
+    import re
+    import sys
+
+    if len(sys.argv) < 4:
+        usage()
+        sys.exit(1)
+
+    prange = sys.argv[1]
+    offset = int(sys.argv[2])
+    file = open(sys.argv[3], 'r')
+
+    m = re.match(r'(\d+)-(\d+)$', prange)
+    if m:
+        page_from = int(m.group(1))
+        page_to = int(m.group(2))
+    else:
+        print "specified page-range is illegal."
+        usage()
+        sys.exit(1)
+
+    shiftindex(file, (page_from, page_to), offset)
+
+if __name__ == '__main__':
+    main()
