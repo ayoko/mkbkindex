@@ -27,3 +27,11 @@ bash$ utils/shiftindex 123-150 -3 index_out.txt > index_new.txt
 
 上記例では -3 と書きましたが、これを +4 のように書けば、
 後ろにずらすことができます。
+
+## 実行方法
+
+次のpythonコードを実行してください。
+
+https://github.com/ayoko/mkbkindex/blob/master/utils/shiftindex
+
+Python 2.1以上推奨
