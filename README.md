@@ -22,6 +22,8 @@ Simple tool but many thanks from professional publishing editors.
 Document is also available in utils/shiftindex.md.
 (Contributed by a professional editor! :) )
 
+## What is this tool?
+
 This software has some excellent results to generate manuscripts of IT books which are issued by a major publisher.
 
 An example input/output is shown in https://github.com/ayoko/mkbkindex/blob/master/examples/input.txt .  It is the easiest way to understand this tool.
