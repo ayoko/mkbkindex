@@ -9,7 +9,7 @@ All rights reserved.
 
 Distributed by
 
-- Document System Limitd (http://www.d-sys.co.jp)
+- Document System Limited (http://www.d-sys.co.jp)
 - Atsushi Yokoyama, Firmlogics (http://flogics.com)
 
 ## News
